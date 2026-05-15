@@ -21,7 +21,7 @@ limitations under the License.
 
 class Color {
 public:
-    Color() : rgb(0, 0, 0) {}
+    Color() : rgb{0, 0, 0} {}
 
     Color(uint8_t r, uint8_t g, uint8_t b) : rgb{r, g, b} {}
 

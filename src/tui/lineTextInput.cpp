@@ -179,7 +179,7 @@ int LineTextInput::addEventListener(const std::string& eventName, std::any callb
 
 void LineTextInput::ensureCursorVisible() {
     if (cursorPosition > inputBuffer.size())
-        cursorPosition = inputBuffer.size();
+        cursorPosition = static_cast<int>(inputBuffer.size());
 
     int screenCursorU8cCntX = cursorPosition - displayStartPosition;
 

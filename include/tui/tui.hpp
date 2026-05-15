@@ -103,7 +103,7 @@ private:
     void DispatchEvent(Widget* widget, const KeyboardEvent& event);
 
     std::vector<Widget*> widgetsToDelete;
-    void deleteWidget(Widget* widget);
+    void processWidgetsToDelete();
 
     Widget* focusedWidget = nullptr;
 

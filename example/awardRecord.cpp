@@ -95,7 +95,7 @@ void printTable(const std::vector<std::vector<std::string>>& table) {
         // 打印分割线
         for (uint64_t i = 0; i < row.size(); ++i) {
             std::cout << '+';
-            for (int j = 0; j < maxLen[i]; ++j)
+            for (uint32_t j = 0; j < maxLen[i]; ++j)
                 std::cout << '-';
         }
         std::cout << '+' << std::endl;
@@ -104,7 +104,7 @@ void printTable(const std::vector<std::vector<std::string>>& table) {
         for (uint64_t i = 0; i < row.size(); ++i) {
             int a = getPrintWidth(row[i]);
             std::cout << "| " << row[i];
-            for (int j = 0; j < maxLen[i] - getPrintWidth(row[i]) - 1; ++j)
+            for (uint32_t j = 0; j < maxLen[i] - getPrintWidth(row[i]) - 1; ++j)
                 std::cout << ' ';
         }
         std::cout << '|' << std::endl;
@@ -113,7 +113,7 @@ void printTable(const std::vector<std::vector<std::string>>& table) {
     // 打印分割线
     for (uint64_t i = 0; i < table[0].size(); ++i) {
         std::cout << '+';
-        for (int j = 0; j < maxLen[i]; ++j)
+        for (uint32_t j = 0; j < maxLen[i]; ++j)
             std::cout << '-';
     }
     std::cout << '+' << std::endl;

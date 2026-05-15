@@ -34,7 +34,7 @@ public:
     virtual Size getMinimumSize() const override;
 
     void setWordWrap(bool enable);
-    void setAutoResize(bool enable);
+    void setAutoResize(bool widthGrow, bool heightGrow);
 
     void alignTextToRowCenter(bool enable);
 
@@ -48,6 +48,7 @@ private:
     std::string text;
 
     bool wordWrap = true;
-    bool autoResize = false;
+    bool autoResize_width = false;
+    bool autoResize_height = false;
     bool alignTextToRowCenterEnabled = false;
 };

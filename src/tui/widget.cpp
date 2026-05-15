@@ -28,6 +28,14 @@ Widget::~Widget() {
     if (tui != nullptr) {
         tui->removeRootWidget(this);
     }
+
+    if (parent != nullptr) {
+        parent->removeChild(this);
+    }
+
+    for (Widget* child : children) {
+        delete child;
+    }
 }
 
 void Widget::draw() {

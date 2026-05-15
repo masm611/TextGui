@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.14)
 project(TextGui VERSION 1.0.0 LANGUAGES CXX)
 
+if(MSVC)
+    add_compile_options("/utf-8")
+endif()
+
 set(SOURCES
 
     src/tui/tui.cpp
@@ -52,7 +56,14 @@ if(UNIX AND NOT APPLE)
     target_link_libraries(TextGui PRIVATE pthread)
 endif()
 
-option(TEXTGUI_BUILD_EXAMPLES "Build example programs" ON)
+
+
+option(TEXTGUI_BUILD_EXAMPLES "Build example programs" OFF)
 if(TEXTGUI_BUILD_EXAMPLES)
     add_subdirectory(example)
+endif()
+
+option(TEXTGUI_BUILD_PYTHON_BINDINGS "Build Python bindings using pybind11" OFF)
+if(TEXTGUI_BUILD_PYTHON_BINDINGS)
+    add_subdirectory(pybind)
 endif()

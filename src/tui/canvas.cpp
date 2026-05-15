@@ -89,7 +89,7 @@ void Canvas::drawText(Rect rect, const std::string& text, const Color& fgColor, 
             }
         }
 
-        curBeginByte += row.size();
+        curBeginByte += static_cast<int>(row.size());
         curX = rect.x;
         curY++;
     }
@@ -119,7 +119,7 @@ void Canvas::drawText(Rect rect, const std::string& text, const Color& fgColor) 
             }
         }
 
-        curBeginByte += row.size();
+        curBeginByte += static_cast<int>(row.size());
         curX = rect.x;
         curY++;
     }
@@ -148,7 +148,7 @@ void Canvas::drawText(Rect rect, const std::string& text) {
             }
         }
 
-        curBeginByte += row.size();
+        curBeginByte += static_cast<int>(row.size());
         curX = rect.x;
         curY++;
     }

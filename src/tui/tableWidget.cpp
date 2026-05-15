@@ -76,7 +76,7 @@ void TableWidget::updateLabel() {
         // 打印分割线
         for (uint64_t i = 0; i < row.size(); ++i) {
             ss << '+';
-            for (int j = 0; j < maxLen[i]; ++j)
+            for (uint32_t j = 0; j < maxLen[i]; ++j)
                 ss << '-';
         }
         ss << '+' << std::endl;
@@ -85,7 +85,7 @@ void TableWidget::updateLabel() {
         for (uint64_t i = 0; i < row.size(); ++i) {
             int a = getPrintWidth(row[i]);
             ss << "| " << row[i];
-            for (int j = 0; j < maxLen[i] - getPrintWidth(row[i]) - 1; ++j)
+            for (uint32_t j = 0; j < maxLen[i] - getPrintWidth(row[i]) - 1; ++j)
                 ss << ' ';
         }
         ss << '|' << std::endl;
@@ -94,7 +94,7 @@ void TableWidget::updateLabel() {
     // 打印分割线
     for (uint64_t i = 0; i < _cells[0].size(); ++i) {
         ss << '+';
-        for (int j = 0; j < maxLen[i]; ++j)
+        for (uint32_t j = 0; j < maxLen[i]; ++j)
             ss << '-';
     }
     ss << '+' << std::endl;

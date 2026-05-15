@@ -22,7 +22,7 @@ TerminalWindow::TerminalWindow(Widget* parent) : Window(parent) {
     _scrollWidget.show();
 
     outputLabel.setTextColor(Color(255, 255, 255));
-    outputLabel.setAutoResize(true);
+    outputLabel.setAutoResize(true, true);
     outputLabel.setWordWrap(false);
     outputLabel.show();
 

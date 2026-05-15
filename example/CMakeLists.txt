@@ -1,3 +1,7 @@
+if(NOT TARGET TextGui::TextGui)
+    find_package(TextGui REQUIRED)
+endif()
+
 set(SOURCES
 
     main.cpp

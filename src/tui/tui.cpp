@@ -104,6 +104,8 @@ void Tui::processEvents() {
     static std::chrono::milliseconds lastClickTime = currentTimestamp() - doubleClickShreshold - std::chrono::milliseconds(1);
 
     {
+        processWidgetsToDelete();
+
         while (true) {
             InputEvent ie;
 
@@ -151,7 +153,7 @@ void Tui::processEvents() {
 
                 // 窗口置顶处理
                 if (!last_lMouseDown && lMouseDown) {
-                    for (int i = rootWidgets.size() - 1; i >= 0; --i) {
+                    for (int i = static_cast<int>(rootWidgets.size()) - 1; i >= 0; --i) {
                         Widget* widget = rootWidgets[i];
                         if (widget->geometry().isPointInRect(cursorX, cursorY)) {
                             rootWidgetToTop(widget);
@@ -575,7 +577,7 @@ void Tui::rootWidgetToTop(Widget* widget) {
 
 Widget* Tui::findTopWidgetAtPoint(short x, short y, Widget* rootWidget) const {
     if (rootWidget == nullptr) {
-        for (int i = rootWidgets.size() - 1; i >= 0; --i) {
+        for (int i = static_cast<int>(rootWidgets.size()) - 1; i >= 0; --i) {
             Widget* widget = rootWidgets[i];
             if (widget->geometry().isPointInRect(x, y)) {
                 Widget* childResult = findTopWidgetAtPoint(x - widget->geometry().x, y - widget->geometry().y, widget);
@@ -586,7 +588,7 @@ Widget* Tui::findTopWidgetAtPoint(short x, short y, Widget* rootWidget) const {
             }
         }
     } else {
-        for (int i = rootWidget->getChildren().size() - 1; i >= 0; --i) {
+        for (int i = static_cast<int>(rootWidget->getChildren().size()) - 1; i >= 0; --i) {
             Widget* widget = rootWidget->getChildren()[i];
             if (widget->geometry().isPointInRect(x - rootWidget->getChildDrawableArea(widget).x, y - rootWidget->getChildDrawableArea(widget).y)) {
                 Widget* childResult = findTopWidgetAtPoint(x - widget->geometry().x - rootWidget->getChildDrawableArea(widget).x, y - widget->geometry().y - rootWidget->getChildDrawableArea(widget).y, widget);
@@ -648,19 +650,11 @@ void Tui::DispatchEvent(Widget* widget, const KeyboardEvent& event) {
     }
 }
 
-void Tui::deleteWidget(Widget* widget) {
-    // 链式destroy，从最孙子的widget开始
-    for (Widget* child : widget->getChildren()) {
-        deleteWidget(child);
+void Tui::processWidgetsToDelete() {
+    for (Widget* widget : widgetsToDelete) {
+        delete widget;
     }
-
-    if (widget->getParent() == nullptr) {
-        removeRootWidget(widget);
-    } else {
-        widget->getParent()->removeChild(widget);
-    }
-
-    delete widget;
+    widgetsToDelete.clear();
 }
 
 Widget* Tui::findRootParentWidget(Widget* widget) {

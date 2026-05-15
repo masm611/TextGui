@@ -24,6 +24,17 @@ void Label::draw() {
 
     Painter painter(this);
 
+    static int oldW = 0;
+    static int oldH = 0;
+
+    if (geometry().width != oldW || geometry().height != oldH) {
+        oldW = geometry().width;
+        oldH = geometry().height;
+
+        if (autoResize_width || autoResize_height)
+            autoResizeToFitText();
+    }
+
     if (wordWrap) {
         int beginX = 0, beginY = 0;
 
@@ -70,7 +81,7 @@ void Label::draw() {
 void Label::setText(const std::string& newText) {
     text = newText;
 
-    if (autoResize)
+    if (autoResize_width || autoResize_height)
         autoResizeToFitText();
 }
 
@@ -108,14 +119,15 @@ Size Label::getMinimumSize() const {
 void Label::setWordWrap(bool enable) {
     wordWrap = enable;
 
-    if (autoResize)
+    if (autoResize_height || autoResize_width)
         autoResizeToFitText();
 }
 
-void Label::setAutoResize(bool enable) {
-    autoResize = enable;
+void Label::setAutoResize(bool widthGrow, bool heightGrow) {
+    autoResize_width = widthGrow;
+    autoResize_height = heightGrow;
 
-    if (autoResize)
+    if (autoResize_height || autoResize_width)
         autoResizeToFitText();
 }
 
@@ -124,9 +136,66 @@ void Label::alignTextToRowCenter(bool enable) {
 }
 
 void Label::autoResizeToFitText() {
-    Size minSize = getMinimumSize();
+    Size newSize;
+    if (autoResize_width) {
+        // 寻找最大行宽
+        int maxLineWidth = 0;
+        size_t start = 0;
+        for (size_t i = 0; i < text.size(); ++i)
+            if (text[i] == '\n') {
+                int lineWidth = getPrintWidth(std::string_view(text.data() + start, i - start));
+                maxLineWidth = std::max(maxLineWidth, lineWidth);
+                start = i + 1;
+            }
+
+        newSize.width = maxLineWidth;
+    } else {
+        newSize.width = geometry().width;
+    }
+
+    if (autoResize_height) {
+        if (autoResize_width) {
+            // 计算行数
+            int lineCount = 0;
+            size_t start = 0;
+            for (size_t i = 0; i < text.size(); ++i)
+                if (text[i] == '\n') {
+                    ++lineCount;
+                    start = i + 1;
+                }
+            ++lineCount;
+
+            newSize.height = lineCount;
+        } else {
+            // 计算显示完所需行数
+            int lineWidth = newSize.width;
+
+            int curX = 0;
+            int curY = 0;
+
+            std::vector<Utf8Char> u8c = getUtf8Chars(text);
+            for (int i = 0; i < text.size(); ++i) {
+                if (u8c[i][0] == '\n') {
+                    curX = 0;
+                    ++curY;
+                    continue;
+                }
+
+                uint8_t width = getPrintWidth(u8c[i]);
+                if (curX + width > lineWidth) {
+                    curX = width;
+                    ++curY;
+                } else {
+                    curX += width;
+                }
+            }
+
+            newSize.height = curY + 1;
+        }
+    }
+
     Rect geometry = this->geometry();
-    geometry.width = minSize.width;
-    geometry.height = minSize.height;
+    geometry.width = newSize.width;
+    geometry.height = newSize.height;
     setGeometry(geometry);
 }

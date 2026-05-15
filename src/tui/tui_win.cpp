@@ -36,7 +36,7 @@ void Tui::init() {
         throw std::runtime_error("无法获取原始控制台输入模式");
     }
 
-    DWORD stdinConsoleMode = {};
+    DWORD stdinConsoleMode = 0;
 
     stdinConsoleMode |= ENABLE_EXTENDED_FLAGS;
     stdinConsoleMode |= ENABLE_MOUSE_INPUT;
@@ -87,6 +87,8 @@ void Tui::init() {
 void Tui::deinit() {
     if (!modesSaved)
         return;
+
+    clearScreenBuffer(true);
 
     // 恢复光标可见性
     CONSOLE_CURSOR_INFO cursorInfo = {1, TRUE};
@@ -153,7 +155,7 @@ void Tui::terminalUpdate() {
 }
 
 void Tui::writeToConsole(const std::string& str) {
-    WriteConsoleA(hStdout, str.c_str(), str.length(), NULL, NULL);
+    WriteConsoleA(hStdout, str.c_str(), static_cast<DWORD>(str.length()), NULL, NULL);
 }
 
 void Tui::clearScreenBuffer(bool flush) {
@@ -179,7 +181,7 @@ void Tui::eventReaderWorker() {
         ReadConsoleInput(hStdin, ir, 128, &eventsRead);
 
         if (eventsRead > 0) {
-            for (int i = 0; i < eventsRead; ++i) {
+            for (DWORD i = 0; i < eventsRead; ++i) {
                 auto& event = ir[i];
                 InputEvent inputEvent;
 
@@ -222,7 +224,7 @@ void Tui::eventReaderWorker() {
 
 int Tui::testStrRealPrintWidth(const std::string& str) {
     clearScreenBuffer(true);
-    WriteConsoleA(hStdout, str.c_str(), str.length(), NULL, NULL);
+    WriteConsoleA(hStdout, str.c_str(), static_cast<DWORD>(str.length()), NULL, NULL);
 
     // 获取光标位置
     CONSOLE_SCREEN_BUFFER_INFO csbi;
